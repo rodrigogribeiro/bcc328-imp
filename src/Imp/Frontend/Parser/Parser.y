@@ -56,7 +56,7 @@ Program : CodeBlock                                { Program $1 }
 CodeBlock : '{' StmtList '}'                       { Block (reverse $2) }
 
 StmtList : StmtList Stmt                           { $2 : $1 }
-         |                                     { [] }
+         |                                         { [] }
 
 Stmt : 'skip' ';'                                  {Skip}
      | Id ':=' Exp ';'                             {$1 := $3}

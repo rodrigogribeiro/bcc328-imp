@@ -98,12 +98,7 @@ defaultValue TBool = EBool False
 
 removeVars :: [Var] -> Env -> Env
 removeVars vs env
-  = foldr removeVar env vs
-  where
-    removeVar _ [] = []
-    removeVar v ((v', val) : env')
-      | v == v' = env'
-      | otherwise = (v', val) : removeVar v env'
+  = [(x,v) | (x,v) <- env, x `notElem` vs]
 
 interpStmt :: Env -> Stmt -> IO (Env, [Var])
 interpStmt env Skip = return (env, [])
@@ -123,12 +118,12 @@ interpStmt env (If e1 b1 b2)
       case val1 of
         EBool True ->
           do
-            (env', vars) <- interpBlock env b1
-            return (removeVars vars env', [])
+            (env', _) <- interpBlock env b1
+            return (env', [])
         EBool False ->
           do
-            (env', vars) <- interpBlock env b2
-            return (removeVars vars env', [])
+            (env', _) <- interpBlock env b2
+            return (env', [])
         _           -> error "type error"
 interpStmt env (While e b)
   = do
@@ -136,9 +131,9 @@ interpStmt env (While e b)
        case v1 of
          EBool False -> return (env, [])
          EBool True -> do
-           (env1, vars) <- interpBlock env b
+           (env1, _) <- interpBlock env b
            (env', _) <- interpStmt env1 (While e b)
-           return (removeVars vars env', [])
+           return (env', [])
          _ -> error "type error"
 interpStmt env (Print e)
   = do

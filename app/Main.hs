@@ -20,7 +20,6 @@ runInterpreter [arg1]
   = do
       content <- readFile arg1
       let ast = impParser content
-      env <- interpProgram ast
-      print env
+      _ <- interpProgram ast
 runInterpreter _
   = printErrorMessage
