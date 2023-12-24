@@ -21,5 +21,6 @@ runInterpreter [arg1]
       content <- readFile arg1
       let ast = impParser content
       _ <- interpProgram ast
+      return ()
 runInterpreter _
   = printErrorMessage
